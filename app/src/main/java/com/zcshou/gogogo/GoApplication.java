@@ -6,7 +6,6 @@ import com.baidu.location.LocationClient;
 import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
 
-import com.baidu.mapapi.common.BaiduMapSDKException;
 import com.elvishew.xlog.LogConfiguration;
 import com.elvishew.xlog.LogLevel;
 import com.elvishew.xlog.XLog;
@@ -34,14 +33,11 @@ public class GoApplication extends Application {
         SDKInitializer.setAgreePrivacy(this, true);
         // 百度定位 7.5 开始，要求必须同意隐私政策，默认为false(官方说可以统一为以上接口，但实际测试并不行，定位还是需要单独设置)
         LocationClient.setAgreePrivacy(true);
+        SDKInitializer.setApiKey(BuildConfig.MAPS_API_KEY);
+        // 在使用 SDK 各组间之前初始化 context 信息，传入 ApplicationContext
+        SDKInitializer.initialize(this);
 
-        try {
-            // 在使用 SDK 各组间之前初始化 context 信息，传入 ApplicationContext
-            SDKInitializer.initialize(this);
-            SDKInitializer.setCoordType(CoordType.BD09LL);
-        } catch (BaiduMapSDKException e) {
-            XLog.e("ERROR init baidu sdk");
-        }
+        SDKInitializer.setCoordType(CoordType.BD09LL);
     }
 
     /**
@@ -56,17 +52,6 @@ public class GoApplication extends Application {
                     .enableThreadInfo()                                    // 允许打印线程信息，默认禁止
                     .enableStackTrace(2)                                   // 允许打印深度为 2 的调用栈信息，默认禁止
                     .enableBorder()                                        // 允许打印日志边框，默认禁止
-//                .jsonFormatter(new MyJsonFormatter())                  // 指定 JSON 格式化器，默认为 DefaultJsonFormatter
-//                .xmlFormatter(new MyXmlFormatter())                    // 指定 XML 格式化器，默认为 DefaultXmlFormatter
-//                .throwableFormatter(new MyThrowableFormatter())        // 指定可抛出异常格式化器，默认为 DefaultThrowableFormatter
-//                .threadFormatter(new MyThreadFormatter())              // 指定线程信息格式化器，默认为 DefaultThreadFormatter
-//                .stackTraceFormatter(new MyStackTraceFormatter())      // 指定调用栈信息格式化器，默认为 DefaultStackTraceFormatter
-//                .borderFormatter(new MyBoardFormatter())               // 指定边框格式化器，默认为 DefaultBorderFormatter
-//                .addObjectFormatter(AnyClass.class,                    // 为指定类型添加对象格式化器
-//                        new AnyClassObjectFormatter())                     // 默认使用 Object.toString()
-//                .addInterceptor(new BlacklistTagsFilterInterceptor(    // 添加黑名单 TAG 过滤器
-//                        "blacklist1", "blacklist2", "blacklist3"))
-//                .addInterceptor(new MyInterceptor())                   // 添加一个日志拦截器
                     .build();
 
             Printer consolePrinter = new ConsolePrinter();                  // 通过 System.out 打印日志到控制台的打印器
